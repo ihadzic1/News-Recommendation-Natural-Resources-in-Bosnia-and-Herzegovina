@@ -1,0 +1,60 @@
+{% extends "core/base.html" %}
+{% block title %}Prirodni resursi{% endblock %}
+{% block content %}
+<p class="eyebrow">Additional feature · Trend discovery</p>
+<h1>Otkrivanje vijesti o prirodnim resursima</h1>
+<p class="lede">Ključne riječi koje korisnici iz SAD-a i Zapadne Evrope pretražuju o prirodnim resursima projektuju se u TF-IDF prostor korpusa, a sistem vraća bh. članke najrelevantnije za odabrani pojam.</p>
+
+<form method="get" class="query">
+  <div class="field">
+    <label for="{{ form.region.id_for_label }}">Regija interesa</label>
+    {{ form.region }}
+  </div>
+  <div class="field" style="flex:2 1 260px">
+    <label for="{{ form.keyword.id_for_label }}">Ključna riječ</label>
+    {{ form.keyword }}
+  </div>
+  <div class="field" style="flex:0 1 130px">
+    <label for="{{ form.k.id_for_label }}">k</label>
+    {{ form.k }}
+  </div>
+  <button class="go" type="submit">Pretraži</button>
+</form>
+
+{% if keyword %}
+<h2>Rezultati za: <span style="color:var(--amber)">{{ keyword.phrase }}</span> <small style="color:var(--muted);font-size:0.8rem">({{ keyword.get_region_display }})</small></h2>
+{% if results %}
+{% for r in results %}
+<div class="rec-card">
+  <div>
+    <span class="badge">{{ r.category }}</span>
+    <h3>{{ r.title }}</h3>
+    <p class="preview">{{ r.preview }}</p>
+  </div>
+  <div class="meter">
+    <div class="score">{{ r.score }}</div>
+    <div class="bar"><i style="width:{% widthratio r.score 1 100 %}%"></i></div>
+  </div>
+</div>
+{% endfor %}
+{% else %}
+<p class="note">Nijedan članak nema pozitivan score za ovaj pojam — pokušajte drugu ključnu riječ.</p>
+{% endif %}
+{% endif %}
+
+<h2>Repozitorij ključnih riječi</h2>
+<div class="grid-2">
+  {% for region, kws in grouped.items %}
+  <div class="panel">
+    <h3>{{ region }}</h3>
+    <table>
+      <tr><th>Ključna riječ</th><th>Bosanski proširni pojmovi</th></tr>
+      {% for kw in kws %}
+      <tr><td>{{ kw.phrase }}</td><td style="color:var(--muted)">{{ kw.expansion_terms }}</td></tr>
+      {% endfor %}
+    </table>
+  </div>
+  {% endfor %}
+</div>
+<p class="note">Repozitorij je pohranjen u bazi podataka (model <code>ResourceKeyword</code>) i može se uređivati kroz Django admin.</p>
+{% endblock %}

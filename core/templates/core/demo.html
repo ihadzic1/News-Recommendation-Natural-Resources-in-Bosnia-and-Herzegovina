@@ -1,0 +1,378 @@
+{% extends "core/base.html" %}
+{% block title %}Demo — Prirodni resursi{% endblock %}
+{% block content %}
+<style>
+/* ── Reset / vars ─────────────────────────────────────────── */
+:root {
+  --klix-red:   #e8001e;
+  --klix-dark:  #111;
+  --klix-gray:  #f4f4f4;
+  --klix-border:#ddd;
+  --card-radius:4px;
+}
+
+/* ── Page header ───────────────────────────────────────────── */
+.demo-topbar {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:10px 0 14px;
+  border-bottom:3px solid var(--klix-red);
+  margin-bottom:20px;
+}
+.demo-topbar h1 { font-size:1.5rem; margin:0; color:var(--klix-dark); }
+.demo-topbar h1 span { color:var(--klix-red); }
+
+.demo-mode-badge {
+  display:inline-flex; align-items:center; gap:8px;
+  padding:5px 14px; border-radius:20px; font-size:.8rem; font-weight:600;
+}
+.demo-mode-badge.cold {
+  background:#e8f4fd; color:#0077cc; border:1px solid #b3d9f5;
+}
+.demo-mode-badge.personalized {
+  background:#edfae8; color:#2a7a1a; border:1px solid #b3e8a0;
+}
+.demo-mode-badge .dot {
+  width:8px; height:8px; border-radius:50%;
+}
+.cold .dot { background:#0077cc; }
+.personalized .dot { background:#2a7a1a; animation:pulse 1.4s infinite; }
+
+@keyframes pulse {
+  0%,100%{ opacity:1; } 50%{ opacity:.4; }
+}
+
+.demo-clicks {
+  font-size:.78rem; color:#666; margin-top:3px; text-align:right;
+}
+
+/* ── Category color map ────────────────────────────────────── */
+.cat-Biznis       { --cat-color:#e67e00; }
+.cat-BiH          { --cat-color:#c0392b; }
+.cat-Sport        { --cat-color:#2980b9; }
+.cat-Vijesti      { --cat-color:#16a085; }
+.cat-Scena        { --cat-color:#8e44ad; }
+.cat-Lifestyle    { --cat-color:#d35400; }
+.cat-Auto         { --cat-color:#2c3e50; }
+.cat-Tehnologija  { --cat-color:#1abc9c; }
+.cat-default      { --cat-color:#7f8c8d; }
+
+/* ── Card base ──────────────────────────────────────────────── */
+.demo-card {
+  background:#fff;
+  border-radius:var(--card-radius);
+  border:1px solid var(--klix-border);
+  overflow:hidden;
+  cursor:pointer;
+  transition:box-shadow .18s, transform .18s;
+  position:relative;
+}
+.demo-card:hover { box-shadow:0 4px 18px rgba(0,0,0,.12); transform:translateY(-2px); }
+.demo-card.clicked { outline:2px solid var(--klix-red); }
+
+.demo-card .cat-bar {
+  height:4px;
+  background:var(--cat-color, #ccc);
+}
+
+.demo-card .card-body {
+  padding:12px 14px 14px;
+}
+
+.demo-card .cat-label {
+  font-size:.68rem; font-weight:700; letter-spacing:.06em; text-transform:uppercase;
+  color:var(--cat-color, #888); margin-bottom:6px; display:block;
+}
+
+.demo-card .card-title {
+  font-family:'Archivo', sans-serif;
+  font-weight:700;
+  color:var(--klix-dark);
+  line-height:1.3;
+  margin:0 0 8px;
+}
+
+.demo-card .card-preview {
+  font-size:.82rem; color:#555; line-height:1.5; margin:0 0 10px;
+}
+
+.demo-card .card-meta {
+  font-size:.72rem; color:#999;
+}
+
+/* ── Image ─────────────────────────────────────────────────── */
+.card-img {
+  width:100%; overflow:hidden; background:#e8e8e8;
+  display:flex; align-items:center; justify-content:center;
+  flex-shrink:0;
+}
+.card-img img {
+  width:100%; height:100%; object-fit:cover; display:block;
+  transition:transform .3s;
+}
+.demo-card:hover .card-img img { transform:scale(1.04); }
+.card-img-fallback {
+  width:100%; height:100%;
+  background:linear-gradient(135deg, var(--cat-color, #aaa) 0%, #ccc 100%);
+  display:flex; align-items:center; justify-content:center;
+  color:rgba(255,255,255,.6); font-weight:900; font-family:'Archivo',sans-serif;
+  font-size:1.8rem; user-select:none;
+}
+
+/* ── Hero ───────────────────────────────────────────────────── */
+.demo-hero {
+  margin-bottom:20px;
+}
+.demo-hero .card-img { height:340px; font-size:4rem; border-radius:var(--card-radius) var(--card-radius) 0 0; }
+.demo-hero .card-title { font-size:1.65rem; }
+.demo-hero .card-preview { font-size:.9rem; }
+
+/* ── Main grid (large + sidebar) ───────────────────────────── */
+.demo-main {
+  display:grid;
+  grid-template-columns:2fr 1fr;
+  gap:16px;
+  margin-bottom:20px;
+}
+
+/* Large card */
+.demo-card--large .card-img { height:210px; font-size:3rem; }
+.demo-card--large .card-title { font-size:1.2rem; }
+
+/* Medium row (inside primary col) */
+.demo-medium-row {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+  margin-top:14px;
+}
+.demo-card--medium .card-img { height:130px; font-size:2rem; }
+.demo-card--medium .card-title { font-size:.95rem; }
+.demo-card--medium .card-preview { display:none; }
+
+/* Sidebar small */
+.demo-sidebar {
+  display:flex; flex-direction:column; gap:10px;
+}
+.demo-card--sidebar {
+  display:flex; align-items:stretch; gap:0;
+}
+.demo-card--sidebar .card-img {
+  width:90px; min-width:90px; height:72px; font-size:1.1rem; flex-shrink:0;
+}
+.demo-card--sidebar .card-body { padding:8px 10px; }
+.demo-card--sidebar .card-title { font-size:.82rem; margin-bottom:0; }
+.demo-card--sidebar .card-preview { display:none; }
+
+/* ── Small cards row ───────────────────────────────────────── */
+.demo-small-row {
+  display:grid;
+  grid-template-columns:repeat(5, 1fr);
+  gap:12px;
+  margin-bottom:20px;
+}
+.demo-card--small .card-img { height:110px; font-size:1.6rem; }
+.demo-card--small .card-title { font-size:.85rem; }
+.demo-card--small .card-preview { display:none; }
+
+.demo-small-row-2 {
+  display:grid;
+  grid-template-columns:repeat(5, 1fr);
+  gap:12px;
+  margin-bottom:30px;
+}
+
+/* ── Notification toast ────────────────────────────────────── */
+#demo-toast {
+  position:fixed; bottom:22px; right:22px; z-index:999;
+  background:var(--klix-dark); color:#fff;
+  padding:10px 18px; border-radius:6px;
+  font-size:.82rem; opacity:0; pointer-events:none;
+  transition:opacity .3s;
+}
+#demo-toast.show { opacity:1; }
+
+/* ── Action buttons ─────────────────────────────────────────── */
+.demo-btn {
+  padding:7px 14px; border-radius:4px; font-size:.8rem; font-weight:600;
+  cursor:pointer; transition:opacity .15s, background .15s; white-space:nowrap;
+  border:none;
+}
+.demo-btn:disabled { opacity:.5; cursor:default; }
+.demo-btn--reset   { background:#c0392b; color:#fff; }
+.demo-btn--reset:hover:not(:disabled) { background:#a93226; }
+.demo-btn--refresh { background:#fff; color:#333; border:1.5px solid var(--klix-border); }
+.demo-btn--refresh:hover:not(:disabled) { background:#f0f0f0; }
+
+/* ── Responsive ─────────────────────────────────────────────── */
+@media(max-width:768px){
+  .demo-main { grid-template-columns:1fr; }
+  .demo-small-row, .demo-small-row-2 { grid-template-columns:repeat(2,1fr); }
+  .demo-medium-row { grid-template-columns:1fr; }
+  .demo-topbar { flex-wrap:wrap; gap:10px; }
+}
+</style>
+
+{% load static %}
+
+<div style="max-width:1140px; margin:0 auto; padding:0 16px;">
+
+  {# ── Top bar ─────────────────────────────────────────────── #}
+  <div class="demo-topbar">
+    <h1>Prirodni resursi <span>BiH</span></h1>
+    <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap; justify-content:flex-end;">
+      <button class="demo-btn demo-btn--reset" onclick="resetPreferences()">Resetiraj Preference</button>
+      <button class="demo-btn demo-btn--refresh" id="refresh-btn" onclick="refreshFeed()">↻ Refreshaj Home Page</button>
+      <div>
+        {% if mode == "personalized" %}
+          <span class="demo-mode-badge personalized" id="mode-badge">
+            <span class="dot"></span> Personalizovano
+          </span>
+        {% else %}
+          <span class="demo-mode-badge cold" id="mode-badge">
+            <span class="dot"></span> Najnovije vijesti
+          </span>
+        {% endif %}
+        <div class="demo-clicks" id="clicks-info">
+          {{ click_count }} klik{% if click_count != 1 %}ova{% endif %}
+          {% if mode == "cold" %} · još {{ threshold|add:"-"|add:click_count|default:threshold }} za personalizaciju{% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {# ── Article grid (AJAX-refreshable) ────────────────────── #}
+  <div id="articles-container">
+    {% include "core/_demo_grid.html" %}
+  </div>
+
+</div>
+
+{# ── Toast ───────────────────────────────────────────────── #}
+<div id="demo-toast"></div>
+
+<script>
+const CLICK_URL_TPL  = "{% url 'record_click' 0 %}".replace('/0/', '/{idx}/');
+const RESET_URL      = "{% url 'reset_preferences' %}";
+const FEED_URL       = "{% url 'demo_feed' %}";
+const CSRFTOKEN      = "{{ csrf_token }}";
+const THRESHOLD      = {{ threshold }};
+
+function imgErr(img) {
+  const wrap = img.parentElement;
+  const cat  = wrap.dataset.cat || '';
+  wrap.innerHTML = '<div class="card-img-fallback">' + cat + '</div>';
+}
+
+const CAT_COLORS = {
+  'Biznis':'#e67e00','BiH':'#c0392b','Sport':'#2980b9',
+  'Vijesti':'#16a085','Scena':'#8e44ad','Lifestyle':'#d35400',
+  'Auto':'#2c3e50','Tehnologija':'#1abc9c',
+};
+
+function applyCatColors(root) {
+  (root || document).querySelectorAll('[class*="cat-"]').forEach(el => {
+    const cat = [...el.classList].find(c => c.startsWith('cat-'))?.replace('cat-', '');
+    if (cat) el.style.setProperty('--cat-color', CAT_COLORS[cat] || '#7f8c8d');
+  });
+}
+applyCatColors();
+
+function showToast(msg) {
+  const t = document.getElementById('demo-toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2400);
+}
+
+function updateModeBadge(mode, clicks, threshold) {
+  const badge = document.getElementById('mode-badge');
+  const info  = document.getElementById('clicks-info');
+  if (badge) {
+    badge.className = 'demo-mode-badge ' + mode;
+    badge.innerHTML = '<span class="dot"></span> ' +
+      (mode === 'personalized' ? 'Personalizovano' : 'Najnovije vijesti');
+  }
+  if (info) {
+    const cnt = parseInt(clicks, 10);
+    const rem = Math.max(0, parseInt(threshold, 10) - cnt);
+    info.textContent = cnt + ' klik' + (cnt !== 1 ? 'ova' : '') +
+      (mode === 'cold' ? ` · još ${rem} za personalizaciju` : '');
+  }
+}
+
+function handleClick(el, link) {
+  const idx = parseInt(el.dataset.idx);
+  el.classList.add('clicked');
+
+  // Otvori odmah u novom tabu, zadrži fokus ovdje
+  if (link && link !== 'None' && link !== '') {
+    const newTab = window.open(link, '_blank', 'noopener');
+    if (newTab) { newTab.blur(); window.focus(); }
+  }
+
+  // Snimaj klik u pozadini (fire-and-forget)
+  fetch(CLICK_URL_TPL.replace('{idx}', idx), {
+    method: 'POST',
+    headers: { 'X-CSRFToken': CSRFTOKEN, 'Content-Type': 'application/json' },
+  })
+  .then(r => r.json())
+  .then(data => {
+    if (!data.ok) return;
+    const cnt = data.click_count;
+    if (cnt >= THRESHOLD) {
+      showToast('Personalizovane preporuke aktivne — refresh za update');
+    } else {
+      showToast(`Klik snimljen (${cnt}/${THRESHOLD} za personalizaciju)`);
+    }
+    updateModeBadge(cnt >= THRESHOLD ? 'personalized' : 'cold', cnt, THRESHOLD);
+  })
+  .catch(() => {});
+}
+
+async function refreshFeed() {
+  const btn = document.getElementById('refresh-btn');
+  btn.disabled = true;
+  btn.textContent = '... Osvježavam';
+  try {
+    const resp = await fetch(FEED_URL, {
+      headers: { 'X-Requested-With': 'XMLHttpRequest' },
+    });
+    if (!resp.ok) throw new Error('HTTP ' + resp.status);
+    const html = await resp.text();
+    const container = document.getElementById('articles-container');
+    container.innerHTML = html;
+    applyCatColors(container);
+
+    // Sync mode badge from hidden meta
+    const meta = document.getElementById('feed-meta');
+    if (meta) {
+      updateModeBadge(meta.dataset.mode, meta.dataset.clicks, meta.dataset.threshold);
+    }
+    showToast('Feed osvježen!');
+  } catch (e) {
+    showToast('Greška pri osvježavanju');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '↻ Refreshaj Home Page';
+  }
+}
+
+async function resetPreferences() {
+  if (!confirm('Resetovati sve preference? Feed će se vratiti na najnovije vijesti.')) return;
+  try {
+    const resp = await fetch(RESET_URL, {
+      method: 'POST',
+      headers: { 'X-CSRFToken': CSRFTOKEN },
+    });
+    const data = await resp.json();
+    if (data.ok) {
+      document.querySelectorAll('.demo-card.clicked').forEach(el => el.classList.remove('clicked'));
+      showToast('Preference resetovane — osvježavam feed...');
+      setTimeout(refreshFeed, 600);
+    }
+  } catch (e) {
+    showToast('Greška pri resetovanju');
+  }
+}
+</script>
+{% endblock %}

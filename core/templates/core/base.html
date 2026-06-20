@@ -1,0 +1,38 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="bs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block title %}Klix Preporučivač{% endblock %} · Bosnian News Recommender</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;900&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<script src="https://cdn.plot.ly/plotly-2.32.0.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="{% static 'core/style.css' %}">
+</head>
+<body>
+<header class="masthead">
+  <div class="masthead-inner">
+    <a class="brand" href="{% url 'home' %}">
+      <span class="brand-mark">▣</span>
+      <span class="brand-text">Preporučivač<br><em>bh. vijesti</em></span>
+    </a>
+    <nav>
+      <a href="{% url 'home' %}" class="{% if active == 'home' %}on{% endif %}">Početna</a>
+      <a href="{% url 'eda' %}" class="{% if active == 'eda' %}on{% endif %}">EDA Dashboard</a>
+      <a href="{% url 'recommender' %}" class="{% if active == 'recommender' %}on{% endif %}">Preporuke</a>
+      <a href="{% url 'keywords' %}" class="{% if active == 'keywords' %}on{% endif %}">Prirodni resursi</a>
+      <a href="{% url 'classification' %}" class="{% if active == 'classification' %}on{% endif %}">Klasifikacija</a>
+      <a href="{% url 'demo' %}" class="{% if active == 'demo' %}on{% endif %}">Demo</a>
+      <a href="{% url 'about' %}" class="{% if active == 'about' %}on{% endif %}">O projektu</a>
+    </nav>
+  </div>
+</header>
+<main>
+{% block content %}{% endblock %}
+</main>
+<footer>
+  <p>CRISP-DM · CDA + MLPR · klix.ba dataset · TF-IDF / k-NN / NB / DT / RF</p>
+</footer>
+</body>
+</html>

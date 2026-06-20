@@ -1,0 +1,36 @@
+{% extends "core/base.html" %}
+{% block title %}Početna{% endblock %}
+{% block content %}
+<p class="eyebrow">CRISP-DM · Content-based recommender · klix.ba</p>
+<h1>Bosanske vijesti,<br>preporučene po sadržaju.</h1>
+<p class="lede">Sistem analizira tekst novinskih članaka sa portala klix.ba, gradi TF-IDF reprezentaciju korpusa i preporučuje slične vijesti pomoću tri metrike sličnosti. Posebni modul povezuje interes za prirodne resurse iz SAD-a i Zapadne Evrope sa lokalnim bh. sadržajem.</p>
+
+<div class="stat-row">
+  <div class="stat"><div class="num">{{ n_articles }}</div><div class="lbl">članaka u korpusu</div></div>
+  <div class="stat"><div class="num">{{ n_categories }}</div><div class="lbl">kategorija vijesti</div></div>
+  <div class="stat"><div class="num">{{ n_features }}</div><div class="lbl">TF-IDF atributa</div></div>
+  <div class="stat"><div class="num">{{ best_method }}</div><div class="lbl">najbolja metrika (k=5)</div></div>
+</div>
+
+<div class="grid-2">
+  <div class="panel">
+    <h2 style="margin-top:0">Cilj projekta</h2>
+    <p>Izgraditi content-based preporučivač koji za odabrani članak vraća k najsličnijih vijesti, klasifikuje kategorije članaka iz teksta i omogućava otkrivanje sadržaja preko ključnih riječi o prirodnim resursima.</p>
+    <h3>Kriteriji uspjeha</h3>
+    <ul>
+      {% for c in success_criteria %}<li>{{ c }}</li>{% endfor %}
+    </ul>
+  </div>
+  <div class="panel">
+    <h2 style="margin-top:0">CRISP-DM faze</h2>
+    <ol class="phase-list">
+      {% for name, desc in phases %}<li><b>{{ name }}</b><span>{{ desc }}</span></li>{% endfor %}
+    </ol>
+  </div>
+</div>
+
+<div class="panel">
+  <h2 style="margin-top:0">Metrike kvaliteta preporuka</h2>
+  <p><b>Category Match Rate</b> — procenat top-k preporuka koje dijele kategoriju sa upitnim člankom; <b>prosječni similarity score</b> — prosjek skorova vraćenih preporuka. Obje metrike se računaju za k ∈ {3, 5, 10} i za sve tri metrike sličnosti (kosinusna, euklidska, Jaccard). Detalji su na stranici <a href="{% url 'classification' %}">Klasifikacija i evaluacija</a>.</p>
+</div>
+{% endblock %}

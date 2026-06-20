@@ -1,0 +1,37 @@
+{% extends "core/base.html" %}
+{% block title %}O projektu{% endblock %}
+{% block content %}
+<p class="eyebrow">Metodologija</p>
+<h1>O projektu</h1>
+<p class="lede">Projekat spaja koncepte predmeta Data Analytics (CDA) i Machine Learning and Pattern Recognition (MLPR) kroz kompletan CRISP-DM ciklus nad korpusom bosanskih vijesti sa portala klix.ba.</p>
+
+<div class="panel">
+  <h2 style="margin-top:0">CRISP-DM metodologija</h2>
+  <ol class="phase-list">
+    {% for name, desc in phases %}<li><b>{{ name }}</b><span>{{ desc }}</span></li>{% endfor %}
+  </ol>
+</div>
+
+<div class="grid-2">
+  <div class="panel">
+    <h2 style="margin-top:0">Tehnike</h2>
+    <ul>
+      <li>Čišćenje teksta i bosanske stop riječi (vlastiti rječnik)</li>
+      <li>TF-IDF vektorizacija (podesivi <code>max_features</code> i <code>ngram_range</code>)</li>
+      <li>Kosinusna sličnost, euklidska udaljenost, Jaccard sličnost</li>
+      <li>k-NN dohvat za k ∈ {3, 5, 10}</li>
+      <li>Multinomial NB, Decision Tree, Random Forest</li>
+      <li>Category Match Rate evaluacija preporuka</li>
+    </ul>
+  </div>
+  <div class="panel">
+    <h2 style="margin-top:0">Kriteriji uspjeha</h2>
+    <ul>{% for c in success_criteria %}<li>{{ c }}</li>{% endfor %}</ul>
+  </div>
+</div>
+
+<div class="panel">
+  <h2 style="margin-top:0">Arhitektura</h2>
+  <p><code>ml/data</code> učitavanje i kvalitet podataka · <code>ml/preprocessing</code> NLP i TF-IDF · <code>ml/recommender</code> metrike sličnosti i keyword discovery · <code>ml/models</code> klasifikatori · <code>ml/evaluation</code> metrike preporuka · <code>ml/dashboard</code> vizualizacije · <code>core</code> Django aplikacija (pogledi, forme, modeli, šabloni).</p>
+</div>
+{% endblock %}

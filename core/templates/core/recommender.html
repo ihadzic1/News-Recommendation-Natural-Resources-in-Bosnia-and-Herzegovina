@@ -1,0 +1,43 @@
+{% extends "core/base.html" %}
+{% block title %}Preporuke{% endblock %}
+{% block content %}
+<p class="eyebrow">Modelling · k-NN retrieval</p>
+<h1>Preporuka sličnih članaka</h1>
+<p class="lede">Odaberite članak, metriku sličnosti i broj preporuka. Sistem vraća k najsličnijih vijesti sa skorovima u TF-IDF prostoru (kosinusna i euklidska) ili nad skupovima tokena (Jaccard).</p>
+
+<form method="get" class="query">
+  <div class="field" style="flex:3 1 340px">
+    <label for="{{ form.article.id_for_label }}">Članak</label>
+    {{ form.article }}
+  </div>
+  <div class="field">
+    <label for="{{ form.method.id_for_label }}">Metrika sličnosti</label>
+    {{ form.method }}
+  </div>
+  <div class="field" style="flex:0 1 130px">
+    <label for="{{ form.k.id_for_label }}">k</label>
+    {{ form.k }}
+  </div>
+  <button class="go" type="submit">Preporuči</button>
+</form>
+
+{% if results %}
+<h2>Upit: <span style="color:var(--amber)">{{ query.title }}</span></h2>
+<p class="note">Kategorija upita: <b>{{ query.article_class_name }}</b> · metrika: <b>{{ query_method }}</b></p>
+{% for r in results %}
+<div class="rec-card">
+  <div>
+    <span class="badge">{{ r.category }}</span>
+    <h3>{{ r.title }}</h3>
+    <p class="preview">{{ r.preview }}</p>
+  </div>
+  <div class="meter">
+    <div class="score">{{ r.score }}</div>
+    <div class="bar"><i style="width:{% widthratio r.score 1 100 %}%"></i></div>
+  </div>
+</div>
+{% endfor %}
+{% elif request.GET %}
+<p class="note">Forma nije ispravno popunjena — odaberite članak.</p>
+{% endif %}
+{% endblock %}

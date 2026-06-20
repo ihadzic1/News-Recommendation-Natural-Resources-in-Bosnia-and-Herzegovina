@@ -1,0 +1,50 @@
+{% extends "core/base.html" %}
+{% block title %}Klasifikacija i evaluacija{% endblock %}
+{% block content %}
+<p class="eyebrow">Modelling · Evaluation</p>
+<h1>Klasifikacija i evaluacija</h1>
+<p class="lede">Predikcija kategorije članka iz teksta (Naive Bayes, Decision Tree, Random Forest) i evaluacija kvaliteta preporuka kroz Category Match Rate.</p>
+
+<h2>Poređenje klasifikatora</h2>
+<p class="note">Hiperparametri: max_depth = {{ params.max_depth }}, n_estimators = {{ params.n_estimators }} (podesivo u <code>ml/models/classifiers.py</code>).</p>
+<div class="panel tight">
+  <table>
+    <tr><th>Model</th><th class="num">Accuracy</th><th class="num">Precision</th><th class="num">Recall</th><th class="num">F1</th></tr>
+    {% for row in table %}
+    <tr {% if forloop.first %}class="best"{% endif %}>
+      <td>{{ row.model }}</td>
+      <td class="num">{{ row.accuracy }}</td>
+      <td class="num">{{ row.precision }}</td>
+      <td class="num">{{ row.recall }}</td>
+      <td class="num">{{ row.f1 }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+</div>
+<div class="panel chart">{{ chart_comparison|safe }}</div>
+
+<h2>Matrice konfuzije</h2>
+<div class="grid-2">
+  {% for c in confusion %}
+  <div class="panel"><img class="cm" alt="Matrica konfuzije {{ c.model }}" src="data:image/png;base64,{{ c.png }}"></div>
+  {% endfor %}
+</div>
+
+<h2>Evaluacija preporučivača</h2>
+<div class="panel chart">{{ chart_evaluation|safe }}</div>
+<div class="panel tight">
+  <table>
+    <tr><th>Metrika</th><th class="num">k</th><th class="num">Category Match Rate (%)</th><th class="num">Prosječni score</th></tr>
+    {% for method, ks in evaluation.items %}
+      {% for k, vals in ks.items %}
+      <tr {% if method == best_method %}class="best"{% endif %}>
+        <td>{{ method }}</td><td class="num">{{ k }}</td>
+        <td class="num">{{ vals.category_match_rate }}</td>
+        <td class="num">{{ vals.avg_similarity }}</td>
+      </tr>
+      {% endfor %}
+    {% endfor %}
+  </table>
+</div>
+<p class="note">Najbolja metrika po Category Match Rate (k=5): <b>{{ best_method }}</b>. Euklidska udaljenost je pretvorena u sličnost izrazom 1/(1+d) radi uporedivosti skorova.</p>
+{% endblock %}

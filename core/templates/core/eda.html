@@ -1,0 +1,47 @@
+{% extends "core/base.html" %}
+{% block title %}EDA Dashboard{% endblock %}
+{% block content %}
+<p class="eyebrow">Data Understanding</p>
+<h1>EDA Dashboard</h1>
+<p class="lede">Eksplorativna analiza korpusa: kategorije, dužine tekstova, angažman čitalaca, nedostajuće vrijednosti i IQR detekcija outliera.</p>
+
+<h2>Analiza kategorija</h2>
+<div class="panel chart">{{ chart_categories|safe }}</div>
+
+<h2>Analiza teksta</h2>
+<div class="grid-2">
+  <div class="panel chart">{{ chart_lengths|safe }}</div>
+  <div class="panel chart">{{ chart_avg_length|safe }}</div>
+</div>
+
+<h2>Analiza angažmana</h2>
+<div class="panel chart">{{ chart_engagement|safe }}</div>
+
+<h2>Nedostajuće vrijednosti</h2>
+<div class="panel tight">
+  <table>
+    <tr><th>Kolona</th><th class="num">Nedostaje</th><th class="num">%</th></tr>
+    {% for m in missing %}
+    <tr><td>{{ m.column }}</td><td class="num">{{ m.count }}</td><td class="num">{{ m.pct }}</td></tr>
+    {% endfor %}
+  </table>
+</div>
+
+<h2>Outlieri (IQR metoda)</h2>
+<div class="panel tight">
+  <table>
+    <tr><th>Kolona</th><th class="num">Donja granica</th><th class="num">Gornja granica</th><th class="num">Broj outliera</th></tr>
+    {% for col, info in outlier_info.items %}
+    <tr><td>{{ col }}</td><td class="num">{{ info.lower|floatformat:1 }}</td><td class="num">{{ info.upper|floatformat:1 }}</td><td class="num">{{ info.n_outliers }}</td></tr>
+    {% endfor %}
+  </table>
+</div>
+<div class="panel chart">{{ chart_outliers|safe }}</div>
+<p class="note">Outlieri u broju komentara i dijeljenja su zadržani u originalnim kolonama, a klipovane verzije (<code>*_clipped</code>) koriste se za vizualizaciju i stabilnije statistike.</p>
+
+<h2>Deskriptivna statistika</h2>
+<div class="panel tight" style="overflow-x:auto">{{ stats|safe }}</div>
+
+<h2>Heatmapa sličnosti</h2>
+<div class="panel chart">{{ chart_heatmap|safe }}</div>
+{% endblock %}

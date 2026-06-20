@@ -1,0 +1,112 @@
+{# Partial: article grid — koristi se i u demo.html i u /demo/feed/ AJAX endpointu #}
+<input type="hidden" id="feed-meta" data-mode="{{ mode }}" data-clicks="{{ click_count }}" data-threshold="{{ threshold }}">
+
+{% if hero %}{% with hero as a %}
+<div class="demo-hero">
+  <div class="demo-card cat-{{ a.category|default:'default'|cut:' ' }}"
+       data-idx="{{ a.idx }}" onclick="handleClick(this, '{{ a.link }}')">
+    <div class="card-img" style="height:340px;" data-cat="{{ a.category|slice:':2'|upper }}">
+      {% if a.image_url %}<img src="{{ a.image_url }}" alt="" loading="eager" onerror="imgErr(this)">
+      {% else %}<div class="card-img-fallback">{{ a.category|slice:':2'|upper }}</div>{% endif %}
+    </div>
+    <div class="card-body">
+      <span class="cat-label">{{ a.category }}</span>
+      <h2 class="card-title">{{ a.title }}</h2>
+      <p class="card-preview">{{ a.preview }}</p>
+      <span class="card-meta">{{ a.date }}</span>
+    </div>
+  </div>
+</div>
+{% endwith %}{% endif %}
+
+<div class="demo-main">
+  <div>
+    {% for a in large %}
+    <div class="demo-card demo-card--large cat-{{ a.category|default:'default'|cut:' ' }}"
+         data-idx="{{ a.idx }}" onclick="handleClick(this, '{{ a.link }}')">
+      <div class="card-img" style="height:210px;" data-cat="{{ a.category|slice:':2'|upper }}">
+        {% if a.image_url %}<img src="{{ a.image_url }}" alt="" loading="lazy" onerror="imgErr(this)">
+        {% else %}<div class="card-img-fallback">{{ a.category|slice:':2'|upper }}</div>{% endif %}
+      </div>
+      <div class="card-body">
+        <span class="cat-label">{{ a.category }}</span>
+        <h3 class="card-title">{{ a.title }}</h3>
+        <p class="card-preview">{{ a.preview }}</p>
+        <span class="card-meta">{{ a.date }}</span>
+      </div>
+    </div>
+    {% endfor %}
+
+    <div class="demo-medium-row">
+      {% for a in medium %}
+      <div class="demo-card demo-card--medium cat-{{ a.category|default:'default'|cut:' ' }}"
+           data-idx="{{ a.idx }}" onclick="handleClick(this, '{{ a.link }}')">
+        <div class="card-img" style="height:130px;" data-cat="{{ a.category|slice:':2'|upper }}">
+          {% if a.image_url %}<img src="{{ a.image_url }}" alt="" loading="lazy" onerror="imgErr(this)">
+          {% else %}<div class="card-img-fallback">{{ a.category|slice:':2'|upper }}</div>{% endif %}
+        </div>
+        <div class="card-body">
+          <span class="cat-label">{{ a.category }}</span>
+          <h4 class="card-title">{{ a.title }}</h4>
+          <span class="card-meta">{{ a.date }}</span>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <aside class="demo-sidebar">
+    {% for a in small|slice:":5" %}
+    <div class="demo-card demo-card--sidebar cat-{{ a.category|default:'default'|cut:' ' }}"
+         data-idx="{{ a.idx }}" onclick="handleClick(this, '{{ a.link }}')">
+      <div class="card-img" style="width:90px;min-width:90px;height:72px;" data-cat="{{ a.category|slice:':2'|upper }}">
+        {% if a.image_url %}<img src="{{ a.image_url }}" alt="" loading="lazy" onerror="imgErr(this)">
+        {% else %}<div class="card-img-fallback">{{ a.category|slice:':2'|upper }}</div>{% endif %}
+      </div>
+      <div class="card-body">
+        <span class="cat-label">{{ a.category }}</span>
+        <h5 class="card-title">{{ a.title }}</h5>
+        <span class="card-meta">{{ a.date }}</span>
+      </div>
+    </div>
+    {% endfor %}
+  </aside>
+</div>
+
+{% if small|length > 5 %}
+<div class="demo-small-row">
+  {% for a in small|slice:"5:10" %}
+  <div class="demo-card demo-card--small cat-{{ a.category|default:'default'|cut:' ' }}"
+       data-idx="{{ a.idx }}" onclick="handleClick(this, '{{ a.link }}')">
+    <div class="card-img" style="height:110px;" data-cat="{{ a.category|slice:':2'|upper }}">
+      {% if a.image_url %}<img src="{{ a.image_url }}" alt="" loading="lazy" onerror="imgErr(this)">
+      {% else %}<div class="card-img-fallback">{{ a.category|slice:':2'|upper }}</div>{% endif %}
+    </div>
+    <div class="card-body">
+      <span class="cat-label">{{ a.category }}</span>
+      <h5 class="card-title">{{ a.title }}</h5>
+      <span class="card-meta">{{ a.date }}</span>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% endif %}
+
+{% if small|length > 10 %}
+<div class="demo-small-row-2">
+  {% for a in small|slice:"10:15" %}
+  <div class="demo-card demo-card--small cat-{{ a.category|default:'default'|cut:' ' }}"
+       data-idx="{{ a.idx }}" onclick="handleClick(this, '{{ a.link }}')">
+    <div class="card-img" style="height:110px;" data-cat="{{ a.category|slice:':2'|upper }}">
+      {% if a.image_url %}<img src="{{ a.image_url }}" alt="" loading="lazy" onerror="imgErr(this)">
+      {% else %}<div class="card-img-fallback">{{ a.category|slice:':2'|upper }}</div>{% endif %}
+    </div>
+    <div class="card-body">
+      <span class="cat-label">{{ a.category }}</span>
+      <h5 class="card-title">{{ a.title }}</h5>
+      <span class="card-meta">{{ a.date }}</span>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% endif %}
