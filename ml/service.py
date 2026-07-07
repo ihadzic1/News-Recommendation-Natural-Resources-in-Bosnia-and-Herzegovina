@@ -53,7 +53,7 @@ class MLService:
         df = df[df["article_class_name"].isin(counts[counts >= 2].index)].reset_index(drop=True)
         df = FeatureEngineer.add_features(df)
         df, self.outlier_info = DataLoader.clip_outliers(df)
-        df["processed_text"] = df["text"].map(self.cleaner.preprocess)
+        df["processed_text"] = (df["title"].fillna("") + " " + df["title"].fillna("") + " " + df["text"].fillna("")).map(self.cleaner.preprocess)
         self.df = df
         self.token_sets = [self.cleaner.token_set(t) for t in df["text"]]
         self.tfidf.fit_transform(df["processed_text"])

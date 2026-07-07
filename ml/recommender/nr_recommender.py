@@ -51,6 +51,7 @@ class NRRecommender:
         self.df = df.reset_index(drop=True)
 
         processed = self.df["title"].map(self.cleaner.preprocess) + " " + \
+                    self.df["title"].map(self.cleaner.preprocess) + " " + \
                     self.df["text"].str[:500].map(self.cleaner.preprocess)
         raw = self.tfidf.fit_transform(processed)
         self.matrix = normalize(raw, norm="l2", copy=False)
