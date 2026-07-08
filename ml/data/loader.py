@@ -25,8 +25,6 @@ class DataLoader:
         df = df.dropna(subset=["text", "title"]).reset_index(drop=True)
         df["article_class"] = df["article_class"].fillna("Nepoznato").astype(str)
         df["article_class_name"] = df["article_class_name"].fillna("Nepoznato").astype(str)
-        if 1 < df["article_class"].nunique() < df["article_class_name"].nunique():
-            df["article_class_name"] = df["article_class"]
         return df
 
     @staticmethod

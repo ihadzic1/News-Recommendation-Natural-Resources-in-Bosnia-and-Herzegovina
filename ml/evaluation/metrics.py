@@ -7,7 +7,7 @@ import random
 class RecommenderEvaluator:
     """Computes evaluation metrics for a dict of recommenders over a corpus."""
 
-    def __init__(self, recommenders, categories, sample_size=150, random_state=42):
+    def __init__(self, recommenders, categories, sample_size=300, random_state=42):
         self.recommenders = recommenders
         self.categories = list(categories)
         self.sample_size = min(sample_size, len(self.categories))
